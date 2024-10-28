@@ -2,7 +2,7 @@ const express = require('express');
 const { google } = require('googleapis');
 const bodyParser = require('body-parser');
 const cors = require('cors'); 
-const credentials = require('./testingapi.json');
+require('dotenv').config();
 
 const app = express();
 app.use(bodyParser.json());
@@ -10,11 +10,15 @@ app.use(cors({ origin: 'http://localhost:5173' })); // Enable CORS for localhost
 
 const PORT = 5007;
 
-// Initialize Google Sheets API
+// Initialize Google Sheets API using environment variables
 const auth = new google.auth.GoogleAuth({
-  credentials,
+  credentials: {
+    client_email: process.env.GOOGLE_CLIENT_EMAIL,
+    private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  },
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
+
 const sheets = google.sheets({ version: 'v4', auth });
 
 const SPREADSHEET_ID = '1WXr6aZ6WPibyI3A7FfwtCRFskpOI6h7aRFbMN1BHwGs';
